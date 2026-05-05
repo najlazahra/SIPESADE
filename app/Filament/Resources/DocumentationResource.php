@@ -48,23 +48,43 @@ class DocumentationResource extends Resource
 }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            // Menampilkan foto kecil (Thumbnail)
+            Tables\Columns\ImageColumn::make('image')
+                ->label('Foto')
+                ->circular(), // Biar bentuknya bulat cantik
+            
+            // Menampilkan Judul
+            Tables\Columns\TextColumn::make('title')
+                ->label('Judul Kegiatan')
+                ->searchable() // Biar bisa dicari
+                ->sortable(),  // Biar bisa diurutkan
+            
+            // Menampilkan Kategori dengan warna
+            Tables\Columns\TextColumn::make('category')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'KEGIATAN' => 'success',
+                    'EDUKASI' => 'warning',
+                    'INOVASI' => 'info',
+                    default => 'gray',
+                }),
+            
+            // Menampilkan Tanggal
+            Tables\Columns\TextColumn::make('event_date')
+                ->label('Tanggal')
+                ->date()
+                ->sortable(),
+        ])
+        ->filters([
+            // Tambahkan filter jika perlu
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+        ]);
+}
 
     public static function getRelations(): array
     {

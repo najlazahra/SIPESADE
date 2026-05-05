@@ -35,23 +35,32 @@ public static function form(Form $form): Form
 }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                //
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('title')
+                ->label('Judul Pengumuman')
+                ->searchable(),
+            
+            Tables\Columns\TextColumn::make('category')
+                ->badge(),
+            
+            // Menampilkan status penting (icon checklist/silang)
+            Tables\Columns\IconColumn::make('is_important')
+                ->label('Penting?')
+                ->boolean(),
+            
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Dibuat Pada')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(), // Tambahkan hapus biar lengkap
+        ]);
+}
 
     public static function getRelations(): array
     {
