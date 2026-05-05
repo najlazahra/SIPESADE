@@ -3,18 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-    // Tambahkan di dalam class User
-public function trashes()
-{
-    return $this->hasMany(Trash::class);
-}
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -50,4 +47,17 @@ public function trashes()
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    // Relasi ke table sampah
+    public function trashes()
+    {
+        return $this->hasMany(Trash::class);
+    }
+
+    // Fungsi wajib dari Filament agar bisa login di server production
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Return true berarti mengizinkan semua akun yang ada di database untuk masuk dasbor
+        return true; 
+    }
 }
